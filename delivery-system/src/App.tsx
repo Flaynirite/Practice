@@ -17,6 +17,7 @@ import FAQ from "./pages/FAQ"
 import Tracking from "./pages/Tracking"
 import Terms from "./pages/Terms"
 import Privacy from "./pages/Privacy"
+import About from "./pages/About"
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="/guest" element={<GuestHome />} />
         <Route path="terms" element={<Terms />} />
         <Route path="privacy" element={<Privacy />} />
+        <Route path="about" element={<About />} />
         
         {/* Захищені маршрути */}
         <Route path="/profile" element={
