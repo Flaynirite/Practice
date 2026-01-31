@@ -6,7 +6,12 @@ import Footer from "../components/Footer"
 import { useAuth } from "../contexts/AuthContext"
 import { 
   FaSearch, 
-  FaMapMarkerAlt, FaExclamationTriangle 
+  FaMapMarkerAlt, 
+  FaExclamationTriangle,
+  FaTruck,
+  FaBox,
+  FaCheckCircle,
+  FaClock
 } from "react-icons/fa"
 
 export default function Tracking() {
@@ -43,13 +48,24 @@ export default function Tracking() {
   }
 
   const Content = (
-    <div style={{ maxWidth: "800px", margin: "40px auto", padding: "0 20px" }}>
+    <div style={{ 
+      maxWidth: "800px", 
+      margin: "40px auto", 
+      padding: "0 20px",
+      width: "100%"
+    }}>
       <div style={{ textAlign: "center", marginBottom: "40px" }}>
         <h1 style={{ fontSize: "2.5rem", color: "#1e293b", marginBottom: "15px" }}>Відстеження посилки</h1>
         <p style={{ color: "#64748b", fontSize: "1.1rem" }}>Дізнайтеся, де знаходиться ваше замовлення в реальному часі</p>
       </div>
 
-      <div style={{ background: "white", padding: "40px", borderRadius: "20px", boxShadow: "0 8px 25px rgba(0,0,0,0.05)", border: "1px solid #f1f5f9" }}>
+      <div style={{ 
+        background: "white", 
+        padding: "40px", 
+        borderRadius: "20px", 
+        boxShadow: "0 8px 25px rgba(0,0,0,0.05)", 
+        border: "1px solid #f1f5f9" 
+      }}>
         <form onSubmit={handleTrack} style={{ display: "flex", gap: "15px", marginBottom: "30px" }}>
           <div style={{ flex: 1, position: "relative" }}>
             <FaSearch style={{ position: "absolute", left: "15px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} />
@@ -58,52 +74,204 @@ export default function Tracking() {
               placeholder="Введіть номер відстеження (напр. ORD-12345)" 
               value={trackingId}
               onChange={(e) => setTrackingId(e.target.value)}
-              style={{ width: "100%", padding: "15px 15px 15px 45px", borderRadius: "12px", border: "1px solid #e2e8f0", fontSize: "1rem", outline: "none" }}
+              style={{ 
+                width: "100%", 
+                padding: "15px 15px 15px 45px", 
+                borderRadius: "12px", 
+                border: "1px solid #e2e8f0", 
+                fontSize: "1rem", 
+                outline: "none",
+                transition: "all 0.3s"
+              }}
+              onFocus={e => {
+                e.currentTarget.style.borderColor = "#4f46e5";
+                e.currentTarget.style.boxShadow = "0 0 0 3px rgba(79, 70, 229, 0.1)";
+              }}
+              onBlur={e => {
+                e.currentTarget.style.borderColor = "#e2e8f0";
+                e.currentTarget.style.boxShadow = "none";
+              }}
             />
           </div>
           <button 
             type="submit" 
             disabled={loading}
-            style={{ padding: "0 30px", background: "#4f46e5", color: "white", border: "none", borderRadius: "12px", fontWeight: 600, cursor: "pointer" }}
+            style={{ 
+              padding: "0 30px", 
+              background: "linear-gradient(135deg, #4f46e5, #8b5cf6)", 
+              color: "white", 
+              border: "none", 
+              borderRadius: "12px", 
+              fontWeight: 600, 
+              cursor: "pointer",
+              transition: "all 0.3s"
+            }}
+            onMouseOver={e => {
+              if (!loading) {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 10px 25px rgba(79, 70, 229, 0.3)";
+              }
+            }}
+            onMouseOut={e => {
+              if (!loading) {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              }
+            }}
           >
             {loading ? "Пошук..." : "Відстежити"}
           </button>
         </form>
 
         {result === "not_found" && (
-          <div style={{ padding: "20px", background: "#fef2f2", borderRadius: "12px", color: "#dc2626", textAlign: "center" }}>
-            <FaExclamationTriangle size={24} style={{ marginBottom: "10px" }} />
+          <div style={{ 
+            padding: "30px", 
+            background: "#fef2f2", 
+            borderRadius: "12px", 
+            color: "#dc2626", 
+            textAlign: "center",
+            border: "1px solid #fecaca"
+          }}>
+            <FaExclamationTriangle size={32} style={{ marginBottom: "15px" }} />
+            <h3 style={{ marginBottom: "10px" }}>Замовлення не знайдено</h3>
             <p>Замовлення з таким номером не знайдено. Перевірте правильність вводу.</p>
           </div>
         )}
 
         {result && result !== "not_found" && (
           <div>
-            <div style={{ padding: "20px", background: "#f0f9ff", borderRadius: "12px", border: "1px solid #bae6fd", marginBottom: "30px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px" }}>
-                <span style={{ color: "#0369a1", fontWeight: 600 }}>Статус: {result.status}</span>
-                <span style={{ color: "#64748b", fontSize: "0.9rem" }}>Останнє оновлення: {result.lastUpdate}</span>
+            <div style={{ 
+              padding: "25px", 
+              background: "#f0f9ff", 
+              borderRadius: "16px", 
+              border: "1px solid #bae6fd", 
+              marginBottom: "30px",
+              boxShadow: "0 4px 15px rgba(14, 165, 233, 0.1)"
+            }}>
+              <div style={{ 
+                display: "flex", 
+                justifyContent: "space-between", 
+                alignItems: "center",
+                marginBottom: "15px",
+                flexWrap: "wrap",
+                gap: "15px"
+              }}>
+                <div>
+                  <span style={{ 
+                    display: "inline-block",
+                    padding: "8px 16px", 
+                    background: "#3b82f6", 
+                    color: "white",
+                    borderRadius: "20px", 
+                    fontWeight: 600,
+                    fontSize: "0.9rem"
+                  }}>
+                    {result.status}
+                  </span>
+                </div>
+                <span style={{ color: "#64748b", fontSize: "0.9rem" }}>
+                  Останнє оновлення: {result.lastUpdate}
+                </span>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", color: "#1e293b" }}>
-                <FaMapMarkerAlt color="#ef4444" />
-                <strong>Поточне місцезнаходження: {result.location}</strong>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", color: "#1e293b" }}>
+                <FaMapMarkerAlt color="#ef4444" size={20} />
+                <div>
+                  <div style={{ fontSize: "0.9rem", color: "#64748b" }}>Поточне місцезнаходження</div>
+                  <strong style={{ fontSize: "1.1rem" }}>{result.location}</strong>
+                </div>
               </div>
             </div>
 
-            <h3 style={{ marginBottom: "20px" }}>Історія переміщення</h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
+            <h3 style={{ 
+              marginBottom: "20px", 
+              display: "flex", 
+              alignItems: "center", 
+              gap: "10px",
+              color: "#1e293b"
+            }}>
+              <FaTruck /> Історія переміщення
+            </h3>
+            <div style={{ 
+              display: "flex", 
+              flexDirection: "column", 
+              gap: "0",
+              position: "relative",
+              paddingLeft: "20px"
+            }}>
+              <div style={{
+                position: "absolute",
+                left: "29px",
+                top: "12px",
+                bottom: "12px",
+                width: "2px",
+                background: "linear-gradient(to bottom, #4f46e5, #3b82f6, #10b981)",
+                zIndex: 0
+              }} />
+              
               {result.history.map((item: any, index: number) => (
-                <div key={index} style={{ display: "flex", gap: "20px", position: "relative" }}>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <div style={{ width: "24px", height: "24px", background: index === 0 ? "#4f46e5" : "#e2e8f0", borderRadius: "50%", zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {index === 0 && <div style={{ width: "10px", height: "10px", background: "white", borderRadius: "50%" }} />}
+                <div key={index} style={{ 
+                  display: "flex", 
+                  gap: "20px", 
+                  position: "relative",
+                  marginBottom: index < result.history.length - 1 ? "30px" : "0",
+                  zIndex: 1
+                }}>
+                  <div style={{ 
+                    display: "flex", 
+                    flexDirection: "column", 
+                    alignItems: "center",
+                    minWidth: "40px"
+                  }}>
+                    <div style={{ 
+                      width: "40px", 
+                      height: "40px", 
+                      background: index === 0 ? "linear-gradient(135deg, #4f46e5, #8b5cf6)" : 
+                                 index === result.history.length - 1 ? "linear-gradient(135deg, #10b981, #34d399)" : "#e2e8f0", 
+                      borderRadius: "50%", 
+                      display: "flex", 
+                      alignItems: "center", 
+                      justifyContent: "center",
+                      border: "3px solid white",
+                      boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
+                    }}>
+                      {index === 0 && <FaBox color="white" size={16} />}
+                      {index === result.history.length - 1 && <FaCheckCircle color="white" size={16} />}
+                      {index !== 0 && index !== result.history.length - 1 && <FaClock color="#64748b" size={16} />}
                     </div>
-                    {index < result.history.length - 1 && <div style={{ width: "2px", flex: 1, background: "#e2e8f0" }} />}
                   </div>
-                  <div style={{ paddingBottom: "30px" }}>
-                    <div style={{ fontSize: "0.85rem", color: "#64748b" }}>{item.time}</div>
-                    <div style={{ fontWeight: 600, color: "#1e293b" }}>{item.status}</div>
-                    <div style={{ fontSize: "0.9rem", color: "#64748b" }}>{item.location}</div>
+                  <div style={{ 
+                    paddingBottom: index < result.history.length - 1 ? "0" : "10px",
+                    background: "white",
+                    padding: "15px",
+                    borderRadius: "12px",
+                    flex: 1,
+                    border: "1px solid #f1f5f9",
+                    boxShadow: "0 4px 10px rgba(0,0,0,0.05)"
+                  }}>
+                    <div style={{ 
+                      fontSize: "0.85rem", 
+                      color: "#64748b",
+                      marginBottom: "5px"
+                    }}>
+                      {item.time}
+                    </div>
+                    <div style={{ 
+                      fontWeight: 600, 
+                      color: "#1e293b",
+                      marginBottom: "5px",
+                      fontSize: "1.1rem"
+                    }}>
+                      {item.status}
+                    </div>
+                    <div style={{ 
+                      fontSize: "0.9rem", 
+                      color: "#64748b",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px"
+                    }}>
+                      <FaMapMarkerAlt size={12} /> {item.location}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -114,10 +282,22 @@ export default function Tracking() {
     </div>
   )
 
-  return user ? <Layout>{Content}<Footer /></Layout> : (
-    <div style={{ background: "#f8fafc", minHeight: "100vh" }}>
-      <GuestHeader />
+  return user ? (
+    <Layout showSidebar={false}>
       {Content}
+      <Footer />
+    </Layout>
+  ) : (
+    <div style={{ 
+      background: "#f8fafc", 
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column"
+    }}>
+      <GuestHeader />
+      <div style={{ flex: 1 }}>
+        {Content}
+      </div>
       <Footer />
     </div>
   )
