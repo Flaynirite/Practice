@@ -19,7 +19,6 @@ import {
   FaReceipt,
   FaBox,
   FaGlobe,
-  FaEuroSign,
   FaShieldAlt,
   FaCreditCard as FaCard,
   FaCheckCircle

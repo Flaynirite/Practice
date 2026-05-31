@@ -7,7 +7,6 @@ import {
   FaUser, 
   FaCalendarAlt, 
   FaCheckCircle, 
-  FaTrashAlt,
   FaPlus,
   FaShieldAlt
 } from "react-icons/fa"
