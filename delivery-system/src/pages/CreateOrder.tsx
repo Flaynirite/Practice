@@ -5,7 +5,6 @@ import Layout from "../components/Layout"
 import { useAuth } from "../contexts/AuthContext"
 import { EbayScannerService } from "../services/ebayScannerService"
 import { AmazonScannerService } from "../services/amazonScannerService"
-import { OrderService } from "../services/orderService"
 import {
   FaPlus,
   FaTrash,
@@ -554,63 +553,86 @@ export default function CreateOrder() {
     }
   }
 
-  function handleSubmit() {
+  const prepareOrderData = () => {
+    if (!user) {
+      setError("Будь ласка, увійдіть в систему");
+      return null;
+    }
+
     if (!country) {
-      setError("Оберіть країну доставки")
-      return
+      setError("Оберіть країну доставки");
+      return null;
     }
 
     if (items.length === 0) {
-      setError("Додайте хоча б один товар")
-      return
+      setError("Додайте хоча б один товар");
+      return null;
     }
 
-    if (!user) {
-      setError("Будь ласка, увійдіть в систему")
-      return
-    }
+    const orderItems = items.map(item => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      quantity: item.quantity,
+      currency: item.currency,
+      originCountry: item.originCountry,
+      weight: item.weight ? parseFloat(item.weight) : undefined,
+      dimensions: item.dimensions,
+      seller: item.seller,
+      sellerLocation: item.sellerLocation,
+      condition: item.condition,
+      brand: item.brand,
+      category: item.category,
+      asin: item.asin
+    }));
+
+    const orderTotal = calculateOrderTotal();
     
-    try {
-      const orderItems = items.map(item => ({
-        id: item.id,
-        title: item.title,
-        price: item.price,
-        quantity: item.quantity,
-        currency: item.currency,
-        originCountry: item.originCountry,
-        weight: item.weight ? parseFloat(item.weight) : undefined,
-        dimensions: item.dimensions,
-        seller: item.seller,
-        sellerLocation: item.sellerLocation,
-        condition: item.condition,
-        brand: item.brand,
-        category: item.category,
-        asin: item.asin
-      }))
+    const orderData = {
+      userId: user.id,
+      userName: user.name || user.email,
+      deliveryCountry: country,
+      items: orderItems,
+      status: 'Створено' as const,
+      totalPrice: orderTotal.total,
+      customsDetails: orderTotal.details,
+      shippingCost: orderTotal.shipping,
+      itemsTotal: orderTotal.itemsTotal,
+      dutiesTotal: orderTotal.duties,
+      exchangeRates: exchangeRates,
+      createdAt: new Date().toISOString(),
+      deliveryTime: getDeliveryTime(),
+      shippingAddress: {
+        country: country,
+        city: "",
+        street: "",
+        postalCode: "",
+        phone: "",
+        fullName: user.name || user.email
+      },
+      paymentMethod: "credit_card",
+      paymentStatus: "pending"
+    };
 
-      const orderTotal = calculateOrderTotal()
-      
-      const orderData = {
-        userId: user.id,
-        userName: user.name || user.email,
-        deliveryCountry: country,
-        items: orderItems,
-        status: 'Створено' as const,
-        totalPrice: orderTotal.total,
-        customsDetails: orderTotal.details,
-        shippingCost: orderTotal.shipping,
-        exchangeRates: exchangeRates,
-        createdAt: new Date().toISOString()
-      }
+    return orderData;
+  }
 
-      const createdOrder = OrderService.createOrder(orderData)
-      
-      alert(`✅ Замовлення створено успішно!\nID: ${createdOrder.id}\nСума: ${orderTotal.total.toFixed(2)}€\nВключає митні платежі: ${orderTotal.details.totalDuties.toFixed(2)}€`)
-      navigate("/dashboard")
-      
-    } catch (error) {
-      console.error('Помилка створення замовлення:', error)
-      setError("Помилка створення замовлення. Спробуйте ще раз.")
+  function handleSubmit() {
+    const orderData = prepareOrderData();
+    
+    if (orderData) {
+      // Переходимо на сторінку оформлення замовлення з переданими даними
+      navigate("/checkout", { 
+        state: { 
+          orderData,
+          country,
+          deliveryTime: getDeliveryTime(),
+          shippingCost: calculateShipping(),
+          duties: calculateAllDuties(),
+          itemsTotal: calculateTotal(),
+          orderTotal: calculateOrderTotal().total
+        } 
+      });
     }
   }
 
@@ -630,7 +652,7 @@ export default function CreateOrder() {
   const isAmazonLink = productLink.includes('amazon.') && (productLink.includes('/dp/') || productLink.includes('/gp/product/'))
 
   return (
-    <Layout>
+    <Layout showSidebar={false}>
       <div style={{
         maxWidth: "1200px",
         margin: "0 auto"
@@ -1987,7 +2009,7 @@ export default function CreateOrder() {
                 }
               }}
             >
-              <FaShippingFast /> Створити замовлення
+              <FaShippingFast /> Перейти до оформлення
             </button>
           </div>
         </div>

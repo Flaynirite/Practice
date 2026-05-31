@@ -18,6 +18,9 @@ import Tracking from "./pages/Tracking"
 import Terms from "./pages/Terms"
 import Privacy from "./pages/Privacy"
 import About from "./pages/About"
+import PaymentMethods from "./pages/PaymentMethods"
+import CheckoutPage from "./pages/СheckoutPage"
+
 
 export default function App() {
   return (
@@ -33,6 +36,7 @@ export default function App() {
         <Route path="terms" element={<Terms />} />
         <Route path="privacy" element={<Privacy />} />
         <Route path="about" element={<About />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
         
         {/* Захищені маршрути */}
         <Route path="/profile" element={
@@ -46,7 +50,13 @@ export default function App() {
             <Dashboard />
           </PrivateRoute>
         } />
-        
+
+               <Route path="/payments" element={
+          <PrivateRoute>
+            <PaymentMethods />
+          </PrivateRoute>
+        } />
+
         <Route path="/orders" element={
           <PrivateRoute>
             <Orders />
