@@ -50,6 +50,7 @@ export default function CustomsCalculator({
     return EbayScannerService.convertFromEUR(amountEUR, currency);
   };
 
+  // Отримуємо символ валюти
   const getCurrencySymbol = () => {
     switch(currency) {
       case 'EUR': return '€';
@@ -306,7 +307,7 @@ export default function CustomsCalculator({
         </div>
       </div>
 
-      {/* Деталі розрахунку – ТУТ ВИПРАВЛЕНО ТИПІЗАЦІЮ */}
+      {/* Деталі розрахунку */}
       <div style={{
         background: '#f0f9ff',
         borderRadius: '12px',
@@ -332,7 +333,7 @@ export default function CustomsCalculator({
           color: '#0369a1',
           lineHeight: 1.6
         }}>
-          {customsFees.details.map((detail: string, index: number) => (   // <-- ЯВНІ ТИПИ
+          {customsFees.details.map((detail, index) => (
             <li key={index} style={{ marginBottom: '8px' }}>
               {detail}
             </li>
