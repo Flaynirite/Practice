@@ -466,7 +466,7 @@ export class AmazonScannerService {
   }
 
   /**
-   * Швидке отримання ціни
+   * Швидке отримання ціни!
    */
   static async getQuickPrice(url: string): Promise<number> {
     try {
